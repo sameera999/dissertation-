@@ -8,7 +8,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 
 ds = pd.read_csv("../dataset/sales.csv", parse_dates=['release_date'])
-ds = ds.sample(n=1000)
+ds = ds.sample(n=2000)
 
 df = pd.DataFrame(ds)
 df = df.sort_values(by="release_date")
