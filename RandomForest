@@ -7,9 +7,10 @@ from sklearn.metrics import mean_absolute_error
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
+from sklearn.decomposition import PCA
 
 df = pd.read_csv("C:/Users/Sameera/OneDrive - York St John University/MYPROJECT/dataset/sales.csv", parse_dates=['release_date'])
-df = df.sample(n=1000)
+#df = df.sample(n=1000)
 trend_data = pd.read_csv("C:/Users/Sameera/OneDrive - York St John University/MYPROJECT/dataset/vis2_gtrends_data.csv", index_col=[0], parse_dates=True)
 
 df = pd.DataFrame(df)
@@ -51,7 +52,7 @@ def frame_series(df, train_window=2, forecast_horizon=1):
         original_color = label_encoder.inverse_transform([color])[0]
         original_season = label_encoder.inverse_transform([season])[0]
         
-        offsetWeeks = 24
+        offsetWeeks = 52
         start_date = release_date - pd.DateOffset(weeks=offsetWeeks)
         cat_gtrend = trend_data.loc[start_date:release_date][original_category][-offsetWeeks:].values[:offsetWeeks]
         col_gtrend = trend_data.loc[start_date:release_date][original_color][-offsetWeeks:].values[:offsetWeeks]
@@ -59,15 +60,15 @@ def frame_series(df, train_window=2, forecast_horizon=1):
         
          # Edge cases with missing trends
         if len(cat_gtrend) < offsetWeeks:
-            cat_gtrend = trend_data.loc[:start_date][original_category][-52:].values[
+            cat_gtrend = trend_data.loc[:start_date][original_category][-offsetWeeks:].values[
                 : offsetWeeks
             ]
         if len(col_gtrend) < offsetWeeks:
-            col_gtrend = trend_data.loc[:start_date][original_color][-52:].values[
+            col_gtrend = trend_data.loc[:start_date][original_color][-offsetWeeks:].values[
                 : offsetWeeks
             ]
         if len(fab_gtrend) < offsetWeeks:
-            fab_gtrend = trend_data.loc[:start_date][original_fabric][-52:].values[
+            fab_gtrend = trend_data.loc[:start_date][original_fabric][-offsetWeeks:].values[
                 : offsetWeeks
             ]
             
@@ -96,8 +97,9 @@ def frame_series(df, train_window=2, forecast_horizon=1):
 
 X, y = frame_series(df)
 # Combine X and y using numpy hstack
-gh = pd.DataFrame(X)
-print(gh.shape)
+pca = PCA(0.95)
+x_pca = pca.fit_transform(X)
+X = x_pca
 
 # Assuming X and y are your NumPy arrays containing features and target values, respectively
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
