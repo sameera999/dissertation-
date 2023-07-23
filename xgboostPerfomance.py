@@ -26,9 +26,9 @@ def runXGBoost(args):
     er.calculate_errors("XGBoost", y_test, y_pred)
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--sample_size", type=int, default=0.1)
+parser.add_argument("--sample_size", type=int, default=1)
 parser.add_argument("--train_window", type=int, default=2)
-parser.add_argument("--forecast_horizon", type=int, default=1)
+parser.add_argument("--forecast_horizon", type=int, default=2)
 parser.add_argument("--method", type=str, default="exo")
 
 args = parser.parse_args()

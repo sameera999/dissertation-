@@ -16,9 +16,9 @@ def runRandomForest(args):
 
     X, y = fd.frame_series(args.train_window,args.forecast_horizon,args.method, args.sample_size)
     # Combine X and y using numpy hstack
-    pca = PCA(0.95)
-    x_pca = pca.fit_transform(X)
-    X = x_pca
+    # pca = PCA(0.95)
+    # x_pca = pca.fit_transform(X)
+    # X = x_pca
 
     # Assuming X and y are your NumPy arrays containing features and target values, respectively
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
@@ -32,9 +32,9 @@ def runRandomForest(args):
     er.calculate_errors("Random Forest",y_test,y_pred)
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--sample_size", type=int, default=0.01)
+parser.add_argument("--sample_size", type=int, default=1)
 parser.add_argument("--train_window", type=int, default=2)
-parser.add_argument("--forecast_horizon", type=int, default=1)
+parser.add_argument("--forecast_horizon", type=int, default=2)
 parser.add_argument("--method", type=str, default="exo")
 
 args = parser.parse_args()

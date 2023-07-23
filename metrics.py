@@ -17,17 +17,13 @@ class ErrorMetrics:
         print(df)
     
     def calculate_mae(self, name, y_test, y_pred):
-        mae = mean_absolute_error(y_test, y_pred)
+        mae = np.mean([mean_absolute_error(y_test[:, i], y_pred[:, i]) for i in range(y_test.shape[1])])
         return round(mae, 2)
         
     def calculate_wape(self, name, y_test, y_pred):
-        total_abs_error = np.sum(np.abs(y_test - y_pred))
-        total_actual = np.sum(y_test)
-        wape = (total_abs_error / total_actual) * 100      
+        wape = np.mean([np.sum(np.abs(y_test[:, i] - y_pred[:, i])) / np.sum(y_test[:, i]) for i in range(y_test.shape[1])]) * 100
         return round(wape, 2)
         
     def calculate_rmse(self, name, y_test, y_pred):
-        mse = mean_squared_error(y_test, y_pred)
-        rmse = sqrt(mse)
+        rmse = np.mean([sqrt(mean_squared_error(y_test[:, i], y_pred[:, i])) for i in range(y_test.shape[1])])
         return round(rmse, 2)
-    
