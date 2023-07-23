@@ -21,8 +21,8 @@ class FashionDataSet:
         discount_columns = [f'w{i}_discount' for i in range(1, 13)]        
         
         
-        for (_, row) in tqdm(df.iterrows(), total=len(df)):
-            sales = row[sales_columns].values
+        for (_, row) in tqdm(df.iterrows(), total=len(df),desc="Preparing Dataset"):           
+            sales = row[sales_columns].values.astype(float)  # Convert sales to float
             discount = row[discount_columns].values
             
             for j in range(len(sales) - train_window - forecast_horizon + 1):
