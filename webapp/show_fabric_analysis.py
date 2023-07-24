@@ -37,3 +37,15 @@ def show_fabric_analysis(df):
         col2.write(f"{feature.capitalize()} with highest sales: {highest_performer} (Sales: {highest_sales})")
         col2.write(f"{feature.capitalize()} with lowest sales: {lowest_performer} (Sales: {lowest_sales})")
         col2.write(f"Total {feature} sales for selected fabric: {total_sales}")
+        
+    st.subheader("Sales Trend Comparison Between fabrics")
+    fabrics = df['fabric'].unique()
+    fig, ax = plt.subplots(figsize=(12, 6))
+    for fabric in fabrics:
+        df_category = df[df['fabric'] == fabric]
+        df_category.loc[:, 'w1_sales':'w12_sales'].mean().plot(label=fabric, ax=ax)
+
+    ax.set_xlabel('Week')
+    ax.set_ylabel('Average Sales')
+    ax.legend()
+    st.pyplot(fig)

@@ -3,6 +3,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+
 def show_season(df):
     st.title("Seasonal Analysis")
 
@@ -24,8 +25,11 @@ def show_season(df):
         # Create two columns for the chart and the summary
         col1, col2 = st.columns(2)
 
-        # Display bar chart on the left column
-        col1.bar_chart(feature_sales_in_season)
+        # Create a bar chart with matplotlib and display it on the left column
+        fig, ax = plt.subplots(figsize=(10, 5))  # Adjust the figure size here
+        ax.bar(feature_sales_in_season.index, feature_sales_in_season, color=sns.color_palette('hls', len(feature_sales_in_season)))
+        plt.xticks(rotation=90 if feature in ['fabric', 'category'] else 0)
+        col1.pyplot(fig)
 
         # Display custom summary on the right column
         col2.subheader("Summary:")
