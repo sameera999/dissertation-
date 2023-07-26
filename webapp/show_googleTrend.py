@@ -41,14 +41,19 @@ def show_googleTrend(gt, df):
     plt.tight_layout()
     st.pyplot(fig)
     
-    gtrendwith_sales(gt, df)
+    gtrendwith_sales(gt, df, selected_columns)  # changed from selected_column to selected_columns
     
     
 
-def gtrendwith_sales(gt, df):
-    st.title("Google trends against the slaes")
+def gtrendwith_sales(gt, df, selected_columns):
+    st.title("Google trends against the selected attributes")
+    
+    # Filter df for selected columns (assuming color, fabric, and category exist in df)
+    df = df[df['color'].isin(selected_columns) | df['fabric'].isin(selected_columns) | df['category'].isin(selected_columns)]
+    
     df.set_index('release_date', inplace=True)
     gt.set_index('date', inplace=True)
+
     # Group by release_date and calculate the sum of sales
     sales_df = df[['w1_sales', 'w2_sales', 'w3_sales', 'w4_sales', 'w5_sales', 'w6_sales', 'w7_sales', 'w8_sales', 'w9_sales', 'w10_sales', 'w11_sales', 'w12_sales']].resample('M').sum()
 
@@ -63,9 +68,9 @@ def gtrendwith_sales(gt, df):
     df.resample('M').size().plot(ax=axs[1], marker='o')
     axs[1].set_title('Number of Products Released Over Time')
     axs[1].set_ylabel('Number of Products')
-      
-    # Plot Google Trends data for each fabric, color, and category
-    gt.plot(ax=axs[2])
+
+    # Filter Google Trends data for each selected attribute
+    gt[selected_columns].plot(ax=axs[2])
     axs[2].set_title('Google Trends Data Over Time')
 
     plt.tight_layout()
