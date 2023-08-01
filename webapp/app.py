@@ -10,6 +10,7 @@ from show_color_analysis import show_color_analysis
 from show_category_analysis import show_category_analysis
 from show_fabric_analysis import show_fabric_analysis
 from show_googleTrend import show_googleTrend
+from show_analysis import show_analysis
 
 st.set_page_config(layout="wide")  # Set page to wide layout
 
@@ -22,7 +23,7 @@ def main():
     
     st.sidebar.title("Navigation")
     page = st.sidebar.radio("Go to", ["Dataset Overview", "Sales Analysis", "Seasonal Analysis",
-                                      "Color Analysis","Category Analysis","Fabric Analysis", "Google Trends"])
+                                      "Color Analysis","Category Analysis","Fabric Analysis", "Google Trends", "Analysis"])
 
     if page == "Dataset Overview":
         show_overview(df)
@@ -38,6 +39,8 @@ def main():
         show_fabric_analysis(df)
     elif page == "Google Trends":
         show_googleTrend(gt, df)
+    elif page == "Analysis":
+        show_analysis()
    
 
 if __name__ == "__main__":

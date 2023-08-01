@@ -43,6 +43,8 @@ def runLSTM(args):
     fd = FashionDataSet()
     er = ErrorMetrics()
     X, y = fd.frame_series(args.train_window,args.forecast_horizon,args.method, args.sample_size)
+    X = X.values
+    y = y.values
     pca = PCA(0.95)
     x_pca = pca.fit_transform(X)
     X = x_pca

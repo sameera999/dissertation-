@@ -6,6 +6,7 @@ from fashionDataset import FashionDataSet;
 from metrics import ErrorMetrics
 import argparse
 import warnings
+import joblib
 warnings.filterwarnings('ignore')
 
 def runXGBoost(args):  
@@ -14,7 +15,7 @@ def runXGBoost(args):
 
     X, y = fd.frame_series(args.train_window,args.forecast_horizon,args.method, args.sample_size)
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+    X_train, X_test, y_train, y_test = train_test_split(X.values, y.values, test_size=0.2, random_state=0)
 
     # Create and train the XGBoost model
     xgb_model = XGBRegressor(n_estimators=100, learning_rate=0.08, gamma=0, subsample=0.75,
@@ -24,6 +25,21 @@ def runXGBoost(args):
     y_pred = xgb_model.predict(X_test)
 
     er.calculate_errors("XGBoost", y_test, y_pred)
+    
+    
+    # Save y_test and y_pred to a CSV file
+    result_df = pd.DataFrame({
+        'y_test': y_test.flatten(),
+        'y_pred': y_pred.flatten()
+    })
+    result_df.to_csv('C:/Users/Sameera/OneDrive - York St John University/MYPROJECT/processedData/XGBoost_model_results.csv', index=False)
+    
+     # Save the trained model
+    joblib.dump(xgb_model, 'C:/Users/Sameera/OneDrive - York St John University/MYPROJECT/models/XGBoost.pkl')
+
+    # Save the feature importance
+    feature_importances = pd.DataFrame(xgb_model.feature_importances_, index = X.columns, columns=['importance']).sort_values('importance', ascending=False)
+    feature_importances.to_csv('C:/Users/Sameera/OneDrive - York St John University/MYPROJECT/processedData/XGBoost_feature_importances.csv')
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--sample_size", type=int, default=1)

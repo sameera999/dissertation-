@@ -26,7 +26,22 @@ class FashionDataSet:
        
         # Create a list of column names for sales and discounts
         sales_columns = [f'w{i}_sales' for i in range(1, 13)]
-        discount_columns = [f'w{i}_discount' for i in range(1, 13)]        
+        discount_columns = [f'w{i}_discount' for i in range(1, 13)]     
+        
+        # Base feature columns
+        base_feature_columns = ['external_code','season','category','color','fabric']   
+        # Sales columns, dependent on train_window
+        sales_columns_names = [f'w{i}_sales' for i in range(1, train_window+1)]
+
+        # Exogenous feature columns
+        exogenous_columns = ['release_year','release_quarter','release_month','release_week','is_weekend','price',
+                            'category_pct_change','color_pct_change','fabric_pct_change'] + \
+                        [f'w{i}_discount' for i in range(1, train_window+1)]
+
+        # Engineered feature columns
+        engineered_columns = ['avg_category_sales', 'avg_fabric_sales', 'avg_color_sales', 'sales_rate_of_change', 
+                            'discount_rate_of_change', 'rolling_mean_sales', 'rolling_std_sales', 
+                            'rolling_mean_discount', 'rolling_std_discount']
         
         # Loop over each row of the DataFrame
         for (_, row) in tqdm(df.iterrows(), total=len(df),desc="Preparing Dataset"):
@@ -48,7 +63,7 @@ class FashionDataSet:
                     features.extend(row[['release_year','releae_quarter','releae_month','releae_week','is_weekend','price','category_pct_change',
                                 'color_pct_change','fabric_pct_change']].tolist())
                     features.extend(list(discount[j : j + train_window]))
-                if method == 'fee':
+                elif method == 'fee':
                    # Add engineered features if the method is 'fee'
                     # Calculate the average sales for the current category in the window of weeks
                     avg_category_sales = self.calculate_avg_category_sales(df, row['category'], (j+1), (j + 1 + train_window))
@@ -85,13 +100,19 @@ class FashionDataSet:
         # Print the performance of the current method
         if method == '':
             print(f"------------Performance with normal data[sample size {sample_size*100}%, train weeks {train_window}, forecast weeks {forecast_horizon}]------------")
-        if method == 'exo':
+            columns_for_X = base_feature_columns + sales_columns_names
+        elif method == 'exo':
             print(f"------------Performance with exogenous data[sample size {sample_size*100}%, train weeks {train_window}, forecast weeks {forecast_horizon}]------------")
-        if method == 'fee':
+            columns_for_X = base_feature_columns + sales_columns_names + exogenous_columns
+        elif method == 'fee':
             print(f"------------Performance with feature engineering data[sample size {sample_size*100}%, train weeks {train_window}, forecast weeks {forecast_horizon}]------------")
+            columns_for_X = base_feature_columns + sales_columns_names + engineered_columns
+            
+        # For target variable, you only have sales for the forecast_horizon
+        columns_for_y = [f'w{i}_forecast_sales' for i in range(1, forecast_horizon+1)]
         
         # Return the features and target as numpy arrays
-        return np.array(X), np.array(y)
+        return pd.DataFrame(X, columns=columns_for_X), pd.DataFrame(y, columns=columns_for_y)
    
         
     def calculate_avg_category_sales(self, df, category, start_week, end_week):
