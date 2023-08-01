@@ -20,7 +20,7 @@ def runRandomForest(args):
     # x_pca = pca.fit_transform(X)
     # X = x_pca
 
-    # Assuming X and y are your NumPy arrays containing features and target values, respectively
+    # get X, and y from fashion dataset
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
 
     # Create and train the Random Forest Regressor model
@@ -33,9 +33,9 @@ def runRandomForest(args):
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--sample_size", type=int, default=1)
-parser.add_argument("--train_window", type=int, default=10)
-parser.add_argument("--forecast_horizon", type=int, default=2)
-parser.add_argument("--method", type=str, default="fee")
+parser.add_argument("--train_window", type=int, default=3)
+parser.add_argument("--forecast_horizon", type=int, default=6)
+parser.add_argument("--method", type=str, default="")
 
 args = parser.parse_args()
 runRandomForest(args)

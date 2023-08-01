@@ -7,6 +7,7 @@ from tqdm import tqdm
 from metrics import ErrorMetrics
 import argparse
 from fashionDataset import FashionDataSet;
+from sklearn.decomposition import PCA
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -42,6 +43,9 @@ def runLSTM(args):
     fd = FashionDataSet()
     er = ErrorMetrics()
     X, y = fd.frame_series(args.train_window,args.forecast_horizon,args.method, args.sample_size)
+    pca = PCA(0.95)
+    x_pca = pca.fit_transform(X)
+    X = x_pca
 
     # Reshape data and convert to PyTorch tensors
     X = torch.from_numpy(X.reshape(X.shape[0], X.shape[1], 1)).float()
@@ -75,9 +79,9 @@ def runLSTM(args):
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--sample_size", type=int, default=1)
-parser.add_argument("--train_window", type=int, default=10)
-parser.add_argument("--forecast_horizon", type=int, default=2)
-parser.add_argument("--method", type=str, default="exo")
+parser.add_argument("--train_window", type=int, default=3)
+parser.add_argument("--forecast_horizon", type=int, default=6)
+parser.add_argument("--method", type=str, default="fee")
 
 args = parser.parse_args()
 runLSTM(args)
