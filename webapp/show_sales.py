@@ -55,7 +55,7 @@ def show_sales(df):
     ax.set_ylabel('Total Sales')
     ax.set_title('Sales Over Time')    
     st.pyplot(fig)
-    
+        
     st.subheader("How discount affect to sales perfoamnce")
     fig, ax = plt.subplots(figsize=(12, 6))
     # Iterate through all weeks

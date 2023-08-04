@@ -23,7 +23,7 @@ def main():
     
     st.sidebar.title("Navigation")
     page = st.sidebar.radio("Go to", ["Dataset Overview", "Sales Analysis", "Seasonal Analysis",
-                                      "Color Analysis","Category Analysis","Fabric Analysis", "Google Trends", "Analysis"])
+                                      "Color Analysis","Category Analysis","Fabric Analysis", "Google Trends", "Model Analysis"])
 
     if page == "Dataset Overview":
         show_overview(df)
@@ -39,7 +39,7 @@ def main():
         show_fabric_analysis(df)
     elif page == "Google Trends":
         show_googleTrend(gt, df)
-    elif page == "Analysis":
+    elif page == "Model Analysis":
         show_analysis()
    
 
