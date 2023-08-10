@@ -11,15 +11,17 @@ def show_sales(df):
     week = st.slider('Select sales week to view', min_value=1, max_value=12, value=1, step=1)
     df_week_sales = df[f'w{week}_sales']
     fig, ax = plt.subplots(figsize=(12, 5))  # Adjust the plot size
+    # Cumulative Sales Analysis
     df_week_sales.plot(kind='line', ax=ax)
     ax.set_xlabel("Clothing ID")
     ax.set_ylabel(f"Week {week} Sales")  # Set y-axis label
-    st.pyplot(fig)
+    st.pyplot(fig)    
     
     st.title("Cumulative Sales Analysis")
     weeks = st.slider('Select sales weeks to view', min_value=1, max_value=12, value=(1, 12), step=1)
     df_week_sales = df.loc[:, [f'w{i}_sales' for i in range(weeks[0], weeks[1]+1)]]
     df_week_sales_cumulative = df_week_sales.cumsum(axis=1)
+    # Line plot to visualize weekly sales for chosen week
     fig, ax = plt.subplots(figsize=(12, 5))
     df_week_sales_cumulative.mean().plot(kind='line', ax=ax)
     ax.set_xlabel("Week")
@@ -171,6 +173,7 @@ def show_sales(df):
     plt.tight_layout()
 
     st.pyplot(fig)
+    
 
    
 
